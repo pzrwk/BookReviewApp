@@ -1,0 +1,10 @@
+﻿namespace BookReviewApp.Dto;
+
+public class BookDto
+{
+    public int Id { get; set; }
+    public string ISBN { get; set; }
+    public string Title { get; set; }
+    public DateTime ReleaseDate { get; set; }
+    public int CopiesSold { get; set; }
+}
