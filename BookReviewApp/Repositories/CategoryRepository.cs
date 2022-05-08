@@ -21,6 +21,12 @@ public class CategoryRepository : ICategoryRepository
         return _context.Categories.Any(c => c.Name.Equals(name));
     }
 
+    public bool CreateCategory(Category category)
+    {
+        _context.Add(category);
+        return Save();   
+    }
+
     public ICollection<Book> GetBooksByCategory(int categoryId)
     {
         return _context.BookCategories.Where(bc => bc.CategoryId == categoryId).Select(c => c.Book).ToList();
@@ -39,5 +45,18 @@ public class CategoryRepository : ICategoryRepository
     public Category GetCategory(string name)
     {
         return _context.Categories.Where(c => c.Name.Equals(name)).FirstOrDefault();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateCategory(Category category)
+    {
+        _context.Update(category);
+        return Save();
     }
 }

@@ -11,6 +11,13 @@ public class ReviewRepository : IReviewRepository
     {
         _context = context;
     }
+
+    public bool CreateReview(Review review)
+    {
+        _context.Add(review);
+        return Save();
+    }
+
     public Review GetReview(int id)
     {
         return _context.Reviews.Where(r => r.Id == id).FirstOrDefault();
@@ -34,5 +41,18 @@ public class ReviewRepository : IReviewRepository
     public bool ReviewExists(int id)
     {
         return _context.Reviews.Any(r => r.Id == id);
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateReview(Review review)
+    {
+        _context.Update(review);
+        return Save();
     }
 }

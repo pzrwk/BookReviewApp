@@ -10,4 +10,7 @@ public interface IBookRepository
     decimal GetBookRating(int bookId);
     bool BookExists(int id);
     bool BookExists(string title);
+    bool CreateBook(int authorId, int categoryId, Book book);
+    bool UpdateBook(int authorId, int categoryId, Book book);
+    bool Save();
 }

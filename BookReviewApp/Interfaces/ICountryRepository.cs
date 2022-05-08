@@ -11,4 +11,7 @@ public interface ICountryRepository
     bool CountryExists(string name);
     Country GetCountryByAuthor(int authorId);
     ICollection<Author> GetAuthorsFromACountry(int countryId);
+    bool CreateCountry(Country country);
+    bool UpdateCountry(Country country);
+    bool Save();
 }

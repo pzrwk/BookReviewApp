@@ -46,4 +46,43 @@ public class BookRepository : IBookRepository
     {
         return _context.Books.Any(b => b.Title.Equals(title));
     }
+
+    public bool CreateBook(int authorId, int categoryId, Book book)
+    {
+        var bookAuthorData = _context.Authors.Where(a => a.Id == authorId).FirstOrDefault();
+        var category = _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+
+        var bookAuthor = new BookAuthor()
+        {
+            Author = bookAuthorData,
+            Book = book
+        };
+
+        _context.Add(bookAuthor);
+
+        var bookCategory = new BookCategory()
+        {
+            Category = category,
+            Book = book
+        };
+
+        _context.Add(bookCategory);
+
+        _context.Add(book);
+
+        return Save();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateBook(int authorId, int categoryId, Book book)
+    {
+        _context.Update(book);
+        return Save();
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookReviewApp.Dto;
 using BookReviewApp.Interfaces;
+using BookReviewApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookReviewApp.Controllers;
@@ -67,5 +68,60 @@ public class CategoryController : Controller
         }
 
         return Ok(books);
+    }
+
+    [HttpPost]
+    public IActionResult CreateCategory([FromBody] CategoryDto categoryToBeCreated)
+    {
+        if(categoryToBeCreated == null)
+        {
+            return BadRequest(new { message = "Invalid category" });
+        }
+
+        var category = _categoryRepository.GetCategories()
+            .Where(c => c.Name.ToLower() == categoryToBeCreated.Name.ToLower())
+            .FirstOrDefault();
+
+        if(category != null)
+        {
+            return Conflict(new { message = "Category already exists" });
+        }
+
+        var categoryMap = _mapper.Map<Category>(categoryToBeCreated);
+
+        if (!_categoryRepository.CreateCategory(categoryMap))
+        {
+            return StatusCode(500, new { message = "Something went wrong while saving" });
+        }
+
+        return Ok("Successfully created");
+    }
+
+    [HttpPut("update/{categoryId}")]
+    public IActionResult UpdateCategory(int categoryId, [FromBody] CategoryDto updatedCategory)
+    {
+        if(updatedCategory == null)
+        {
+            return BadRequest(new { message = "Invalid category" });
+        }
+
+        if(updatedCategory.Id != categoryId)
+        {
+            return BadRequest(new { message = "Ids don't match" });
+        }
+
+        if(!_categoryRepository.CategoryExists(categoryId))
+        {
+            return NotFound(new { message = "Category with this Id doesn't exist" });
+        }
+
+        var categoryMap = _mapper.Map<Category>(updatedCategory);
+
+        if(!_categoryRepository.UpdateCategory(categoryMap))
+        {
+            return StatusCode(500, new { message = "Something went wrong while updating category" });
+        }
+
+        return Ok("Successfully updated");
     }
 }

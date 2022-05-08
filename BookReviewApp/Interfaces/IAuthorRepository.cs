@@ -8,4 +8,7 @@ public interface IAuthorRepository
     Author GetAuthor(int id);
     bool AuthorExists(int id);
     ICollection<Book> GetBooksOfAnAuthor(int authorId);
+    bool CreateAuthor(Author author);
+    bool UpdateAuthor(Author author);
+    bool Save();
 }

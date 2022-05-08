@@ -12,6 +12,12 @@ public class ReviewerRepository : IReviewerRepository
         _context = context;
     }
 
+    public bool CreateReviewer(Reviewer reviewer)
+    {
+        _context.Add(reviewer);
+        return Save();
+    }
+
     public Reviewer GetReviewer(int id)
     {
         return _context.Reviewers.Where(x => x.Id == id).FirstOrDefault();
@@ -25,5 +31,17 @@ public class ReviewerRepository : IReviewerRepository
     public bool ReviewerExists(int id)
     {
         return _context.Reviewers.Any(x => x.Id == id);
+    }
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateReviewer(Reviewer reviewer)
+    {
+        _context.Update(reviewer);
+        return Save();
     }
 }

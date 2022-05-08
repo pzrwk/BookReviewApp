@@ -10,4 +10,7 @@ public interface ICategoryRepository
     ICollection<Book> GetBooksByCategory(int categoryId);
     bool CategoryExists(int id);
     bool CategoryExists(string name);
+    bool CreateCategory(Category category);
+    bool Save();
+    bool UpdateCategory(Category category);
 }

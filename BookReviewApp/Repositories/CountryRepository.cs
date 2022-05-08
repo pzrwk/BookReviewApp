@@ -46,4 +46,23 @@ public class CountryRepository : ICountryRepository
     {
         return _context.Authors.Where(a => a.Country.Id == countryId).ToList();
     }
+
+    public bool CreateCountry(Country country)
+    {
+        _context.Add(country);
+        return Save();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateCountry(Country country)
+    {
+        _context.Update(country);
+        return Save();
+    }
 }

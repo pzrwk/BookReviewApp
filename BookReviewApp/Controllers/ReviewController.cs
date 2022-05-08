@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookReviewApp.Dto;
 using BookReviewApp.Interfaces;
+using BookReviewApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookReviewApp.Controllers;
@@ -9,11 +10,15 @@ namespace BookReviewApp.Controllers;
 public class ReviewController : Controller
 {
     private readonly IReviewRepository _reviewRepository;
+    private readonly IReviewerRepository _reviewerRepository;
+    private readonly IBookRepository _bookRepository;
     private readonly IMapper _mapper;
-    public ReviewController(IReviewRepository reviewRepository, IMapper mapper)
+    public ReviewController(IReviewRepository reviewRepository, IMapper mapper, IReviewerRepository reviewerRepository, IBookRepository bookRepository)
     {
         _reviewRepository = reviewRepository;
         _mapper = mapper;
+        _reviewerRepository = reviewerRepository;
+        _bookRepository = bookRepository;
     }
 
     [HttpGet]
@@ -65,5 +70,63 @@ public class ReviewController : Controller
         }
 
         return Ok(reviews);
+    }
+
+    [HttpPost]
+    public IActionResult CreateReview([FromQuery] int reviewerId, [FromQuery] int bookId, [FromBody] ReviewDto reviewToBeCreated)
+    {
+        if(reviewToBeCreated == null)
+        {
+            return BadRequest(new { message = "Invalid review" });
+        }
+
+        var reviews = _reviewRepository.GetReviews()
+            .Where(r => r.Title.ToLower() == reviewToBeCreated.Title.ToLower())
+            .FirstOrDefault();
+
+        if(reviews != null)
+        {
+            return Conflict(new { message = "Review already exists" });
+        }
+
+        var reviewMap = _mapper.Map<Review>(reviewToBeCreated);
+
+        reviewMap.Reviewer = _reviewerRepository.GetReviewer(reviewerId);
+        reviewMap.Book = _bookRepository.GetBook(bookId);
+
+        if (!_reviewRepository.CreateReview(reviewMap))
+        {
+            return StatusCode(500, new { message = "Something went wrong while saving" });
+        }
+
+        return Ok("Successfully created");
+    }
+
+    [HttpPut("update/{reviewId}")]
+    public IActionResult UpdateCategory(int reviewId, [FromBody] ReviewDto updatedReview)
+    {
+        if (updatedReview == null)
+        {
+            return BadRequest(new { message = "Invalid review" });
+        }
+
+        if (updatedReview.Id != reviewId)
+        {
+            return BadRequest(new { message = "Ids don't match" });
+        }
+
+        if (!_reviewRepository.ReviewExists(reviewId))
+        {
+            return NotFound(new { message = "Review with this Id doesn't exist" });
+        }
+
+        var reviewMap = _mapper.Map<Review>(updatedReview);
+
+        if (!_reviewRepository.UpdateReview(reviewMap))
+        {
+            return StatusCode(500, new { message = "Something went wrong while updating review" });
+        }
+
+        return Ok("Successfully updated");
     }
 }

@@ -16,6 +16,12 @@ public class AuthorRepository : IAuthorRepository
         return _context.Authors.Any(a => a.Id == id);
     }
 
+    public bool CreateAuthor(Author author)
+    {
+        _context.Add(author);
+        return Save();
+    }
+
     public Author GetAuthor(int id)
     {
         return _context.Authors.Where(a => a.Id == id).FirstOrDefault();
@@ -29,5 +35,18 @@ public class AuthorRepository : IAuthorRepository
     public ICollection<Book> GetBooksOfAnAuthor(int authorId)
     {
         return _context.BookAuthors.Where(bc => bc.AuthorId == authorId).Select(a => a.Book).ToList();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+
+        return save > 0 ? true : false;
+    }
+
+    public bool UpdateAuthor(Author author)
+    {
+        _context.Update(author);
+        return Save();
     }
 }
