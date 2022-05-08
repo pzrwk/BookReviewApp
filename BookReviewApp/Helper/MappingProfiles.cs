@@ -14,5 +14,11 @@ public class MappingProfiles : Profile
         CreateMap<Author, AuthorDto>();
         CreateMap<Review, ReviewDto>();
         CreateMap<Reviewer, ReviewerDto>();
+        CreateMap<CategoryDto, Category>();
+        CreateMap<CountryDto, Country>();
+        CreateMap<AuthorDto, Author>();
+        CreateMap<BookDto, Book>();
+        CreateMap<ReviewDto, Review>();
+        CreateMap<ReviewerDto, Reviewer>();
     }
 }
