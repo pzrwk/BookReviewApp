@@ -57,8 +57,8 @@ public class CategoryController : Controller
         return Ok(category);
     }
 
-    [HttpGet("book/{categoryId}")]
-    public IActionResult GetBookByCategoryId(int categoryId)
+    [HttpGet("{categoryId}/books")]
+    public IActionResult GetBooksByCategoryId(int categoryId)
     {
         var books = _mapper.Map<List<BookDto>>(_categoryRepository.GetBooksByCategory(categoryId));
         

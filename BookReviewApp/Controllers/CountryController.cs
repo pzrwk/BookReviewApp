@@ -58,7 +58,7 @@ public class CountryController : Controller
         return Ok(country);
     }
 
-    [HttpGet("authors/{authorId}")]
+    [HttpGet("author/{authorId}")]
     public IActionResult GetCountryOfAnAuthor(int authorId)
     {
         var country = _mapper.Map<CountryDto>(_countryRepository.GetCountryByAuthor(authorId));

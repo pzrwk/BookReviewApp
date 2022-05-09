@@ -31,7 +31,7 @@ public class AuthorController : Controller
         return Ok(authors);
     }
 
-    [HttpGet("author/{authorId}")]
+    [HttpGet("{authorId}")]
     public IActionResult GetAuthorById(int authorId)
     {
         if(!_authorRepository.AuthorExists(authorId))
@@ -44,7 +44,7 @@ public class AuthorController : Controller
         return Ok(author);
     }
 
-    [HttpGet("book/{authorId}")]
+    [HttpGet("{authorId}/books")]
     public IActionResult GetBooksByAuthorId(int authorId)
     {
         var books = _mapper.Map<List<BookDto>>(_authorRepository.GetBooksOfAnAuthor(authorId));
