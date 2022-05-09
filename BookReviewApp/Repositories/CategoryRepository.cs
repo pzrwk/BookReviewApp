@@ -27,6 +27,12 @@ public class CategoryRepository : ICategoryRepository
         return Save();   
     }
 
+    public bool DeleteCategory(Category category)
+    {
+        _context.Remove(category);
+        return Save();
+    }
+
     public ICollection<Book> GetBooksByCategory(int categoryId)
     {
         return _context.BookCategories.Where(bc => bc.CategoryId == categoryId).Select(c => c.Book).ToList();

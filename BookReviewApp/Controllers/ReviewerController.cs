@@ -99,4 +99,22 @@ public class ReviewerController : Controller
 
         return Ok("Successfully updated");
     }
+
+    [HttpDelete("{reviewerId}")]
+    public IActionResult DeleteReviewer(int reviewerId)
+    {
+        if (!_reviewerRepository.ReviewerExists(reviewerId))
+        {
+            return NotFound(new { message = "Reviewer with this Id doesn't exist" });
+        }
+
+        var reviewerToDelete = _reviewerRepository.GetReviewer(reviewerId);
+
+        if (!_reviewerRepository.DeleteReviewer(reviewerToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting reviewer" });
+        }
+
+        return Ok("Successfully deleted");
+    }
 }

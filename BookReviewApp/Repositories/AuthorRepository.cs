@@ -22,6 +22,12 @@ public class AuthorRepository : IAuthorRepository
         return Save();
     }
 
+    public bool DeleteAuthor(Author author)
+    {
+        _context.Remove(author);
+        return Save();
+    }
+
     public Author GetAuthor(int id)
     {
         return _context.Authors.Where(a => a.Id == id).FirstOrDefault();

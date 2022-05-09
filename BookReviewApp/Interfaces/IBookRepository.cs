@@ -12,5 +12,6 @@ public interface IBookRepository
     bool BookExists(string title);
     bool CreateBook(int authorId, int categoryId, Book book);
     bool UpdateBook(int authorId, int categoryId, Book book);
+    bool DeleteBook(Book book);
     bool Save();
 }

@@ -124,4 +124,22 @@ public class CategoryController : Controller
 
         return Ok("Successfully updated");
     }
+
+    [HttpDelete("{categoryId}")]
+    public IActionResult DeleteCategory(int categoryId)
+    {
+        if (!_categoryRepository.CategoryExists(categoryId))
+        {
+            return NotFound(new { message = "Category with this Id doesn't exist" });
+        }
+
+        var categoryToDelete = _categoryRepository.GetCategory(categoryId);
+
+        if (!_categoryRepository.DeleteCategory(categoryToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting category" });
+        }
+
+        return Ok("Successfully deleted");
+    }
 }

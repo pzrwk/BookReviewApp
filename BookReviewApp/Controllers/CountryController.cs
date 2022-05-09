@@ -133,4 +133,22 @@ public class CountryController : Controller
 
         return Ok("Successfully updated");
     }
+
+    [HttpDelete("{countryId}")]
+    public IActionResult DeleteCountry(int countryId)
+    {
+        if (!_countryRepository.CountryExists(countryId))
+        {
+            return NotFound(new { message = "Country with this Id doesn't exist" });
+        }
+
+        var countryToDelete = _countryRepository.GetCountry(countryId);
+
+        if (!_countryRepository.DeleteCountry(countryToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting country" });
+        }
+
+        return Ok("Successfully deleted");
+    }
 }

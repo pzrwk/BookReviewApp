@@ -120,4 +120,22 @@ public class AuthorController : Controller
 
         return Ok("Successfully updated");
     }
+
+    [HttpDelete("{authorId}")]
+    public IActionResult DeleteAuthor(int authorId)
+    {
+        if (!_authorRepository.AuthorExists(authorId))
+        {
+            return NotFound(new { message = "Author with this Id doesn't exist" });
+        }
+
+        var authorToDelete = _authorRepository.GetAuthor(authorId);
+
+        if (!_authorRepository.DeleteAuthor(authorToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting author" });
+        }
+
+        return Ok("Successfully deleted");
+    }
 }

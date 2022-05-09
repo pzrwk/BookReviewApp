@@ -129,4 +129,22 @@ public class ReviewController : Controller
 
         return Ok("Successfully updated");
     }
+
+    [HttpDelete("{reviewId}")]
+    public IActionResult DeleteReview(int reviewId)
+    {
+        if (!_reviewRepository.ReviewExists(reviewId))
+        {
+            return NotFound(new { message = "Review with this Id doesn't exist" });
+        }
+
+        var reviewToDelete = _reviewRepository.GetReview(reviewId);
+
+        if (!_reviewRepository.DeleteReview(reviewToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting review" });
+        }
+
+        return Ok("Successfully deleted");
+    }
 }

@@ -13,14 +13,21 @@ public class BookController : Controller
     private readonly IBookRepository _bookRepository;
     private readonly IAuthorRepository _authorRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
 
-    public BookController(IBookRepository bookRepository, IMapper mapper, IAuthorRepository authorRepository, ICategoryRepository categoryRepository)
+    public BookController(
+        IBookRepository bookRepository, 
+        IMapper mapper, 
+        IAuthorRepository authorRepository, 
+        ICategoryRepository categoryRepository, 
+        IReviewRepository reviewRepository)
     {
         _bookRepository = bookRepository;
         _mapper = mapper;
         _authorRepository = authorRepository;
         _categoryRepository = categoryRepository;
+        _reviewRepository = reviewRepository;
     }
 
     [HttpGet]
@@ -139,5 +146,29 @@ public class BookController : Controller
         }
 
         return Ok("Successfully updated");
+    }
+
+    [HttpDelete("{bookId}")]
+    public IActionResult DeleteBook(int bookId)
+    {
+        if (!_bookRepository.BookExists(bookId))
+        {
+            return NotFound(new { message = "Book with this Id doesn't exist" });
+        }
+        
+        var reviewsToDelete = _reviewRepository.GetReviewsOfABook(bookId);
+        var bookToDelete = _bookRepository.GetBook(bookId);
+
+        if(!_reviewRepository.DeleteReviews(reviewsToDelete.ToList()))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting reviews of a book" });
+        }
+
+        if (!_bookRepository.DeleteBook(bookToDelete))
+        {
+            return StatusCode(500, new { message = "Something went wrong while deleting book" });
+        }
+
+        return Ok("Successfully deleted");
     }
 }
