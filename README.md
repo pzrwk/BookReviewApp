@@ -2,9 +2,7 @@
 
 ## **_Setup_**
 
-1. Clone a repository
-
-`git clone https://github.com/pzrwk/BookReviewApp.git`
+1. Clone a repository - `git clone https://github.com/pzrwk/BookReviewApp.git`
 
 2. Open it using Visual Studio
 3. Create DB in your MySQL engine
